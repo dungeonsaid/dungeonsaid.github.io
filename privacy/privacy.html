@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dungeons Aid — Privacy Policy</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    max-width: 720px; margin: 0 auto; padding: 24px 20px 60px;
+    font: 17px/1.6 Georgia, 'Times New Roman', serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    body { background: #151516; color: #e6e3dd; }
+    a { color: #c9a35c; }
+    h1, h2 { color: #c9a35c; }
+  }
+  @media (prefers-color-scheme: light) {
+    body { background: #faf7f2; color: #2a2622; }
+    a { color: #8a6a2f; }
+    h1, h2 { color: #6d5423; }
+  }
+  h1 { font-size: 1.7em; line-height: 1.25; margin-bottom: 0.2em; }
+  h2 { font-size: 1.2em; margin-top: 1.8em; }
+  .effective { opacity: 0.75; font-style: italic; }
+  .tldr { border-left: 4px solid currentColor; padding: 2px 14px; opacity: 0.95; }
+  li { margin: 6px 0; }
+</style>
+</head>
+<body>
+
+<h1>Dungeons Aid — Privacy Policy</h1>
+<p class="effective">Effective date: July 2, 2026</p>
+
+<p>Dungeons Aid ("the app") is an independent tabletop-RPG companion app
+developed by Berol99. Contact:
+<a href="mailto:dungeonsaid@gmail.com">dungeonsaid@gmail.com</a>.</p>
+
+<p class="tldr">The short version: <strong>the app has no ads, no analytics,
+no tracking, and no accounts. Your characters, settings and rules content
+stay on your device.</strong> Data leaves your device only through the three
+channels described below — one performed by your phone's own speech service,
+one strictly opt-in, and one you trigger yourself.</p>
+
+<h2>1. Microphone and speech recognition</h2>
+<p>The app's Listen feature transcribes what is said at your table so it can
+look up game rules for you.</p>
+<ul>
+  <li>The app <strong>never records, stores, or uploads audio</strong>. No
+  audio ever touches our servers — we don't operate any audio server.</li>
+  <li>By default, transcription is performed by <strong>your device's
+  built-in speech recognition service</strong> (on Android, typically
+  Google's; on iOS, Apple's). Depending on your device and its settings, that
+  service may process audio on-device or on its provider's servers, under
+  that provider's own privacy policy. This is the same system service used by
+  your keyboard's dictation.</li>
+  <li>Microphone access is used only while you have listening turned on, and
+  only to feed that transcription. You can revoke the microphone permission
+  at any time in your system settings; the rest of the app keeps working.</li>
+</ul>
+<p><strong>Optional cloud transcription:</strong> in Settings you may switch
+the speech engine to a cloud transcription API (for example OpenAI Whisper)
+using <strong>your own API key and endpoint</strong>. If you do, short audio
+segments are sent directly from your device to the endpoint <strong>you
+configured</strong>, under that provider's privacy policy. This mode is off
+unless you set it up yourself.</p>
+<p>The transcribed text is processed on your device to find matching rules
+entries. It is not sent anywhere, with one opt-in exception described
+next.</p>
+
+<h2>2. Opt-in phrase contributions (off by default)</h2>
+<p>To improve recognition of D&amp;D terms, you can choose to contribute the
+<strong>text</strong> of recognized phrases. This is <strong>disabled by
+default</strong>; nothing is collected unless you explicitly turn it on,
+either at the one-time first-launch prompt or in Settings → Recognition.</p>
+<p>If you opt in, the app periodically uploads:</p>
+<ul>
+  <li>the text of phrases recognized while listening (never audio);</li>
+  <li>which compendium entries matched, and whether you opened one;</li>
+  <li>basic technical context: app version and build, operating system and
+  version, device model (a hardware type such as "Pixel 7" — not a serial
+  number), device language, and your recognition settings (engine type,
+  language, sensitivity);</li>
+  <li>a random install identifier — a random number generated inside the app
+  the first time it runs. It is not derived from your device, has no
+  connection to your identity, and resets if you reinstall the app.</li>
+</ul>
+<p>This data is stored in <strong>Google Cloud Firestore (Firebase)</strong>,
+using Firebase <strong>anonymous</strong> authentication — no name, no email,
+no account. We use it for one purpose only: building a corpus to improve the
+app's D&amp;D-term recognition. It is never sold, shared with third parties
+(beyond Google's hosting of the database), or used for advertising.</p>
+<p><strong>You can withdraw at any time</strong> by turning the toggle off in
+Settings → Recognition. Turning it off also discards anything buffered but
+not yet uploaded. To request deletion of previously contributed phrases,
+email <a href="mailto:dungeonsaid@gmail.com">dungeonsaid@gmail.com</a>; note
+that because contributions are anonymous, we may need details (approximate
+dates, example phrases) to locate yours.</p>
+
+<h2>3. Feedback and bug reports (only when you send them)</h2>
+<p>The in-app feedback form (Settings → Feedback &amp; bug reports) sends
+your message to the developer through a Google Form. Along with your title,
+description, and optional name, a diagnostic attachment is included: app
+version, OS and version, device model, device language, relevant app
+settings, and the list of loaded compendium files. <strong>The app shows you
+this exact attachment before you send it.</strong> Nothing is sent unless you
+press Send.</p>
+<p>If the form is unreachable, the app instead opens your own email client
+with the same content pre-filled, and nothing is sent until you send the
+email.</p>
+
+<h2>4. Everything else stays on your device</h2>
+<ul>
+  <li><strong>Characters, dice rolls, notes, portraits</strong> — stored only
+  on your device.</li>
+  <li><strong>Compendium files you import</strong> — parsed and cached only
+  on your device.</li>
+  <li><strong>Settings, saved/recent entries, pronunciation fixes, on-device
+  recognition learning</strong> — only on your device.</li>
+</ul>
+<p>Uninstalling the app deletes all of this local data.</p>
+
+<h2>5. Permissions the app asks for</h2>
+<ul>
+  <li><strong>Microphone</strong> — speech recognition for the Listen feature
+  (see §1).</li>
+  <li><strong>Photos/camera</strong> (only when you use it) — to set a
+  character portrait. Portraits never leave your device.</li>
+  <li><strong>Files</strong> (only when you use it) — to import compendium
+  XML files or custom fonts you choose.</li>
+</ul>
+
+<h2>6. Third-party services</h2>
+<ul>
+  <li><strong>Device speech recognition</strong> (Google on most Android
+  devices, Apple on iOS) — processes audio for transcription under its
+  provider's policy.</li>
+  <li><strong>Google Firebase (Firestore, anonymous auth)</strong> — stores
+  opt-in phrase contributions only (§2).</li>
+  <li><strong>Google Forms</strong> — receives feedback reports you send
+  (§3).</li>
+  <li><strong>A cloud transcription provider of your choosing</strong> — only
+  if you configure one yourself (§1).</li>
+</ul>
+<p>The app contains no advertising SDKs and no analytics SDKs.</p>
+
+<h2>7. Children</h2>
+<p>Dungeons Aid is not directed at children under 13, and we do not knowingly
+collect personal information from anyone. The app collects no personal
+information unless you opt in to text contributions or send feedback, and
+both are anonymous by design.</p>
+
+<h2>8. Changes to this policy</h2>
+<p>If this policy changes in a way that matters (for example, if the opt-in
+contribution wording changes), the app will show the consent prompt again
+before anything new is collected. The latest version of this policy is always
+available at the URL where you are reading it.</p>
+
+<h2>9. Contact</h2>
+<p>Questions, concerns, or deletion requests:
+<a href="mailto:dungeonsaid@gmail.com">dungeonsaid@gmail.com</a>.</p>
+
+</body>
+</html>
