@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dungeons Aid — Say it. See the rules.</title>
+<meta name="description" content="Free Android companion for 5e tabletop games: say a spell or rule out loud and it appears on screen, plus character sheets that do the maths for you. Alpha testers wanted.">
+<meta name="theme-color" content="#0f0f10">
+<link rel="icon" type="image/png" href="logo.png">
+
+<!-- Link previews (Discord, Reddit, Bluesky, X, WhatsApp) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Dungeons Aid">
+<meta property="og:title" content="Dungeons Aid — Say it. See the rules.">
+<meta property="og:description" content="Voice rules lookup & automated 5e character sheets. Free Android alpha — testers wanted.">
+<meta property="og:url" content="https://michelebosio99.github.io/dungeonsaid-privacy/alpha/">
+<meta property="og:image" content="https://michelebosio99.github.io/dungeonsaid-privacy/alpha/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://michelebosio99.github.io/dungeonsaid-privacy/alpha/og.png">
+
+<style>
+  @font-face {
+    font-family: "MorrisRoman";
+    src: url("MorrisRoman-Black.ttf") format("truetype");
+    font-display: swap;
+  }
+  :root {
+    --bg: #0f0f10;
+    --surface: #1a1a1c;
+    --surface-hi: #272729;
+    --outline: #3a3a3c;
+    --ink: #ece6d8;
+    --muted: #a9a39a;
+    --purple: #9c7bd6;
+    --purple-hi: #b79cf0;
+    --red: #c65b5b;
+    --discord: #5865f2;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 17px/1.6 "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    overflow-x: hidden;
+  }
+  a { color: var(--purple-hi); }
+  .display { font-family: "MorrisRoman", Georgia, serif; font-weight: 400; letter-spacing: 0.01em; }
+  .container { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative;
+    padding: 56px 0 72px;
+    background:
+      radial-gradient(ellipse at 25% 40%, rgba(156, 123, 214, 0.22), transparent 55%),
+      radial-gradient(ellipse at 85% 30%, rgba(198, 91, 91, 0.12), transparent 50%);
+  }
+  .hero-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: center; }
+  .hero img.logo { width: 132px; filter: drop-shadow(0 8px 24px rgba(0,0,0,.6)); }
+  .hero h1 { font-size: clamp(48px, 8vw, 78px); line-height: 1; margin: 8px 0 0; }
+  .tagline { font-size: clamp(20px, 2.6vw, 26px); color: var(--muted); margin: 14px 0 0; }
+  .tagline b { color: var(--ink); }
+  .badge {
+    display: inline-block; margin-top: 18px; padding: 5px 12px; border-radius: 999px;
+    border: 1px solid var(--purple); color: var(--purple-hi);
+    font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  }
+  .ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 13px 22px; border-radius: 12px; font-weight: 600; text-decoration: none;
+    border: 1px solid transparent; transition: transform .12s ease, filter .12s ease;
+  }
+  .btn:hover { transform: translateY(-1px); filter: brightness(1.08); }
+  .btn svg { width: 20px; height: 20px; fill: currentColor; flex: none; }
+  .btn.primary { background: var(--purple); color: #fff; }
+  .btn.discord { background: var(--discord); color: #fff; }
+  .btn.ghost { border-color: var(--outline); color: var(--ink); background: var(--surface); }
+
+  /* Listen mock: speech bubble → result card */
+  .demo { display: flex; flex-direction: column; gap: 18px; }
+  .heard {
+    align-self: flex-start; display: inline-flex; align-items: center; gap: 12px;
+    background: var(--surface-hi); border: 1px solid var(--outline); border-radius: 999px;
+    padding: 10px 22px 10px 12px; font-size: 20px; font-style: italic;
+    opacity: 0; animation: rise .5s ease .2s forwards;
+  }
+  .mic {
+    width: 36px; height: 36px; border-radius: 50%; background: var(--purple);
+    display: grid; place-items: center; flex: none;
+    animation: pulse 1.8s ease-out infinite;
+  }
+  .mic svg { width: 19px; height: 19px; fill: #fff; }
+  .arrow { align-self: center; color: var(--purple); font-size: 26px; line-height: 1; margin: -6px 0;
+    opacity: 0; animation: rise .4s ease .9s forwards; }
+  .card {
+    background: var(--surface); border: 1px solid var(--outline); border-left: 5px solid var(--purple);
+    border-radius: 14px; padding: 18px 22px; box-shadow: 0 18px 40px rgba(0,0,0,.45);
+    opacity: 0; animation: rise .5s ease 1.3s forwards;
+  }
+  .card .type { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--purple-hi); }
+  .card h3 { font-family: "MorrisRoman", Georgia, serif; font-weight: 400; font-size: 34px; margin: 4px 0 10px; }
+  .card p { margin: 10px 0 0; font-size: 15px; color: var(--muted); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { font-size: 14px; padding: 4px 10px; border-radius: 8px; background: var(--surface-hi); white-space: nowrap; }
+  .chip.fire { background: rgba(198, 91, 91, .2); color: #f0a3a3; }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(156, 123, 214, .55); }
+    100% { box-shadow: 0 0 0 14px rgba(156, 123, 214, 0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .heard, .arrow, .card { animation: none; opacity: 1; }
+    .mic { animation: none; }
+  }
+
+  /* ---------- Sections ---------- */
+  section { padding: 64px 0; border-top: 1px solid #1f1f21; }
+  h2 { font-size: clamp(34px, 5vw, 46px); margin: 0 0 8px; }
+  .lead { color: var(--muted); margin: 0 0 32px; max-width: 640px; }
+
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .feature { background: var(--surface); border: 1px solid var(--outline); border-radius: 16px; padding: 24px; }
+  .feature .icon {
+    width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center;
+    background: rgba(156, 123, 214, .16); margin-bottom: 14px;
+  }
+  .feature .icon svg { width: 24px; height: 24px; fill: var(--purple-hi); }
+  .feature h3 { font-family: "MorrisRoman", Georgia, serif; font-weight: 400; font-size: 28px; margin: 0 0 8px; }
+  .feature ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 15.5px; }
+  .feature li { margin: 5px 0; }
+  .feature li b { color: var(--ink); font-weight: 600; }
+
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; counter-reset: step; }
+  .step {
+    position: relative; background: var(--surface); border: 1px solid var(--outline);
+    border-radius: 16px; padding: 26px 22px 22px; display: flex; flex-direction: column;
+  }
+  .step::before {
+    counter-increment: step; content: counter(step);
+    font-family: "MorrisRoman", Georgia, serif; font-size: 40px; line-height: 1; color: var(--purple);
+  }
+  .step h3 { margin: 8px 0 6px; font-size: 19px; }
+  .step p { margin: 0 0 18px; color: var(--muted); font-size: 15.5px; flex: 1; }
+  .step .btn { align-self: flex-start; padding: 10px 16px; font-size: 15px; }
+  .note {
+    margin-top: 22px; padding: 16px 20px; border-radius: 12px;
+    border: 1px solid rgba(156, 123, 214, .4); background: rgba(156, 123, 214, .08);
+    font-size: 15.5px;
+  }
+  .note b { color: var(--purple-hi); }
+
+  .help { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .help .feature p { color: var(--muted); font-size: 15.5px; margin: 0 0 16px; }
+
+  details {
+    background: var(--surface); border: 1px solid var(--outline); border-radius: 12px;
+    padding: 14px 20px; margin-bottom: 10px;
+  }
+  summary { cursor: pointer; font-weight: 600; }
+  details p { color: var(--muted); margin: 10px 0 2px; font-size: 15.5px; }
+
+  footer { padding: 36px 0 48px; border-top: 1px solid #1f1f21; color: var(--muted); font-size: 14px; }
+  footer .links { display: flex; flex-wrap: wrap; gap: 18px; margin-bottom: 12px; }
+
+  @media (max-width: 860px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+    .features, .steps, .help { grid-template-columns: 1fr; }
+    .hero { padding-top: 36px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="container hero-grid">
+    <div>
+      <img class="logo" src="logo.png" alt="Dungeons Aid logo: a d20 over an open book">
+      <h1 class="display">Dungeons Aid</h1>
+      <p class="tagline"><b>Say it. See the rules.</b><br>Your 5e table companion, with voice rules lookup and character sheets that do the maths for you.</p>
+      <span class="badge">Free · Android alpha · testers wanted</span>
+      <div class="ctas">
+        <a class="btn primary" href="#join">Join the alpha</a>
+        <a class="btn discord" href="https://discord.gg/BaNNmW33Yt">
+          <svg viewBox="0 0 24 24"><path d="M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.6 1.3a18.4 18.4 0 0 0-5.6 0L8.6 3a19.7 19.7 0 0 0-4.9 1.4C.6 9 -.3 13.6.1 18.1a19.9 19.9 0 0 0 6 3l1.3-2.1c-.7-.3-1.4-.6-2-1l.5-.4a14.2 14.2 0 0 0 12.2 0l.5.4c-.6.4-1.3.7-2 1l1.3 2.1a19.8 19.8 0 0 0 6-3c.5-5.2-.9-9.8-3.6-13.7zM8.3 15.3c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4zm7.4 0c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4z"/></svg>
+          Join the Discord
+        </a>
+      </div>
+    </div>
+
+    <div class="demo" aria-label="Example: saying 'I cast Fireball' shows the Fireball spell card">
+      <div class="heard">
+        <span class="mic"><svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg></span>
+        “I cast Fireball!”
+      </div>
+      <div class="arrow">↓</div>
+      <div class="card">
+        <div class="type">Spell · Level 3 Evocation</div>
+        <h3>Fireball</h3>
+        <div class="chips">
+          <span class="chip fire">8d6 Fire</span>
+          <span class="chip">DEX save · half</span>
+          <span class="chip">20-ft sphere</span>
+          <span class="chip">150 ft</span>
+        </div>
+        <p>Tap to expand the full rules text. No typing, no flipping pages.</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section id="features">
+  <div class="container">
+    <h2 class="display">Less flipping, more playing</h2>
+    <p class="lead">Built by a player who got tired of losing the thread of combat to a rulebook search.</p>
+    <div class="features">
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg></div>
+        <h3>Listen</h3>
+        <ul>
+          <li><b>Speak naturally.</b> The app picks spells, conditions, monsters and items out of what you say</li>
+          <li>Tap any result to open the full rules</li>
+          <li>Prefer typing? Search is forgiving of typos</li>
+          <li>Speech is processed <b>on your device</b> by default</li>
+        </ul>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div>
+        <h3>Character sheets</h3>
+        <ul>
+          <li><b>Guided builder</b>: species, class, background, scores, gear</li>
+          <li>AC, saves, attacks and spell slots are <b>computed for you</b></li>
+          <li>Conditions and exhaustion adjust your rolls automatically</li>
+          <li>Tap to roll; hold and slide for advantage or disadvantage</li>
+          <li>Level-up wizard, companions and summons, session notes</li>
+        </ul>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24"><path d="M21 5c-1.1-.35-2.3-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/></svg></div>
+        <h3>Your content</h3>
+        <ul>
+          <li>Ships with the free <b>SRD 5.2.1</b> rules</li>
+          <li>Import any <b>FightClub5-format XML</b> for the books and homebrew you own</li>
+          <li>Build custom monsters, items and spells in the app</li>
+          <li><b>No account.</b> Your characters stay on your device</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="join">
+  <div class="container">
+    <h2 class="display">Join the alpha</h2>
+    <p class="lead">Free, Android only for now, about 2 minutes. Phones and tablets both work.</p>
+    <div class="steps">
+      <div class="step">
+        <h3>Join the tester group</h3>
+        <p>Google Play only lets members of this group download the alpha. Sign in with the Google account your phone uses.</p>
+        <a class="btn ghost" href="https://groups.google.com/g/dungeonsaid-testers">Open the group</a>
+      </div>
+      <div class="step">
+        <h3>Become a tester</h3>
+        <p>Open the Play testing page and tap <b>“Become a tester”</b>. Use the same Google account.</p>
+        <a class="btn ghost" href="https://play.google.com/apps/testing/dev.berol.dungeonsaid">Opt in on Google Play</a>
+      </div>
+      <div class="step">
+        <h3>Install &amp; play</h3>
+        <p>Install from the Play Store like any app. Updates arrive automatically.</p>
+        <a class="btn primary" href="https://play.google.com/store/apps/details?id=dev.berol.dungeonsaid">Get it on Google Play</a>
+      </div>
+    </div>
+    <p class="note"><b>Please keep it installed for 14 days.</b> Google requires a new app to have at least 12 testers for two weeks before it can launch publicly. Every tester who stays on gets it there. Testers are credited in the app.</p>
+  </div>
+</section>
+
+<section id="feedback">
+  <div class="container">
+    <h2 class="display">Found a bug? Got an idea?</h2>
+    <p class="lead">It's an alpha, so things will break, and every report makes it better. Pick whichever is easiest:</p>
+    <div class="help">
+      <div class="feature">
+        <h3>Discord</h3>
+        <p>Bug reports, feature ideas, patch notes and chatting with other testers. The fastest way to reach me.</p>
+        <a class="btn discord" href="https://discord.gg/BaNNmW33Yt">Join the Discord</a>
+      </div>
+      <div class="feature">
+        <h3>In the app</h3>
+        <p><b>Settings → Feedback &amp; bug reports</b>. One form, no account needed, sent straight to me with your app version attached.</p>
+        <a class="btn ghost" href="https://docs.google.com/forms/d/e/1FAIpQLSeYLmBbQR1Gs3fUWZSU6dhCzfTxgtNSulBaeETYw7D2TZ1f5w/viewform">Open the form</a>
+      </div>
+      <div class="feature">
+        <h3>Email</h3>
+        <p>For anything private, or if you'd just rather write.</p>
+        <a class="btn ghost" href="mailto:dungeonsaid@gmail.com">dungeonsaid@gmail.com</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="container">
+    <h2 class="display">Questions</h2>
+    <details>
+      <summary>Is it free?</summary>
+      <p>Yes. No ads, no subscriptions, no account.</p>
+    </details>
+    <details>
+      <summary>iPhone?</summary>
+      <p>Not yet. Android comes first; iOS is planned after the public launch. Join the Discord to hear when it's ready.</p>
+    </details>
+    <details>
+      <summary>Which rules are included?</summary>
+      <p>The app ships with the System Reference Document 5.2.1, the free, openly licensed core of the 2024 5e rules. If you own other books or have homebrew in FightClub5 / Game Master 5 XML format, you can import it in Settings → Compendiums.</p>
+    </details>
+    <details>
+      <summary>Does it record my table?</summary>
+      <p>Only while you turn the microphone on. Speech is turned into text on your device by default, and nothing is stored or uploaded unless you opt in to help improve recognition. Read the <a href="https://michelebosio99.github.io/dungeonsaid-privacy/">privacy policy</a>.</p>
+    </details>
+    <details>
+      <summary>Does it work offline?</summary>
+      <p>Rules lookup, character sheets and dice all work offline. On-device speech recognition depends on your phone's speech engine; most current Android phones support it offline.</p>
+    </details>
+    <details>
+      <summary>“App not available” on Google Play?</summary>
+      <p>Make sure you finished steps 1 and 2 with the <i>same</i> Google account your phone's Play Store uses. It can take a few minutes after opting in before the Play Store lets you install.</p>
+    </details>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="links">
+      <a href="https://discord.gg/BaNNmW33Yt">Discord</a>
+      <a href="https://michelebosio99.github.io/dungeonsaid-privacy/">Privacy policy</a>
+      <a href="mailto:dungeonsaid@gmail.com">Contact</a>
+    </div>
+    <p>Made by Berol99. Dungeons Aid is unofficial fan content, not affiliated with, endorsed, sponsored, or approved by Wizards of the Coast. Includes material from the System Reference Document 5.2.1 by Wizards of the Coast LLC, licensed under <a href="https://creativecommons.org/licenses/by/4.0/legalcode">CC-BY-4.0</a>.</p>
+  </div>
+</footer>
+
+</body>
+</html>
